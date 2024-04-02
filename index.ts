@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import { refreshCommands } from './slash-commands';
 import { config } from './src/config/config';
-
+import { getPublicEveDataForUser } from './src/services/search';
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.on('ready', () => {
@@ -18,7 +18,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.editReply('Please provide a name!');
                 return;
             }
-            const embedMessage = await trackMemberByName(name);
+            const embedMessage = await getPublicEveDataForUser(name);
             await interaction.editReply({ embeds: [embedMessage] });
             break;
         case "search-by-discord-user":
@@ -29,7 +29,7 @@ client.on('interactionCreate', async interaction => {
                 return;
             }
             // @ts-ignore
-            const embedMessageUser = await trackMemberByName(user.nickname);
+            const embedMessageUser = await getPublicEveDataForUser(user.nickname);
             await interaction.editReply({ embeds: [embedMessageUser] });
             break;
     }

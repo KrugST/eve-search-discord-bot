@@ -1,4 +1,13 @@
 {
+  "name": "eve-search-discord-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot that searches the EVE Online API for information",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.ts"
+  },
+  "type": "module",
   "dependencies": {
     "axios": "^1.6.8",
     "discord.js": "^14.14.1",

@@ -63,7 +63,7 @@ async function getCharacterCorporationHistory(characterId) {
     }
 }
 
-async function findCharIdByNameUsingCharacterWithScope(access_token, name, characterId) {
+async function searchEveUsers(access_token, name, characterId) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/characters/${characterId}/search/?categories=character&datasource=tranquility&language=en&search=${encodeURIComponent(name)}&strict=True`,
@@ -100,13 +100,15 @@ async function getAllCharacterInfo(characterId, retryCount = 0) {
         const corporationInfo = await getCorporationInfo(lastCorporationId);
         const corporationImage = await getCorporationImage(lastCorporationId);
         corporationInfo.corporation_id = lastCorporationId;
-        let allianceInfo = {}, allianceImage = {};
+        let allianceInfo = {
+            name: 'No Alliance',
+        };
+        let allianceImage = {
+            px64x64: 'https://images.evetech.net/corporations/0/logo?size=64',
+        };
         if (corporationInfo.alliance_id) {
             allianceInfo = await getAllianceInfo(corporationInfo.alliance_id);
             allianceImage = await getAllianceImage(corporationInfo.alliance_id);
-        } else {
-            allianceInfo.name = 'No Alliance';
-            allianceImage.px64x64 = 'https://images.evetech.net/corporations/0/logo?size=64';
         }
 
         characterInfo.characterCorporationHistory = characterCorporationHistory;
@@ -127,4 +129,4 @@ async function getAllCharacterInfo(characterId, retryCount = 0) {
     }
 }
 
-export { getCharacterInfo, getCharacterPortrait, getCharacterCorporationHistory, findCharIdByNameUsingCharacterWithScope, getAllCharacterInfo };
+export { getCharacterInfo, getCharacterPortrait, getCharacterCorporationHistory, searchEveUsers, getAllCharacterInfo };

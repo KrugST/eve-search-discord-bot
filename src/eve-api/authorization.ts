@@ -43,10 +43,10 @@ async function callApiWithTokenRefresh({ apiFunction, autorizationObject, args =
             return response;
         } catch (error) {
             if (error.response.status === 403) {
-                console.log(`Token expired. Refreshing with refreshRecruiterTokens...`);
+                console.log(`Token expired. Refreshing with callApiWithTokenRefresh...`);
                 const refreshedTokens = await refreshTokens(autorizationObject, config.EVE_ENCRYPTED_CLIENT_SECRET);
-                process.env.ACCESS_TOKEN = refreshedTokens.access_token;
-                process.env.REFRESH_TOKEN = refreshedTokens.refresh_token;
+                config.ACCESS_TOKEN = refreshedTokens.access_token;
+                config.REFRESH_TOKEN = refreshedTokens.refresh_token;
                 args[0] = refreshedTokens.access_token;
                 return await apiFunction(...args);
             } else if (error.response.status === 504) {
