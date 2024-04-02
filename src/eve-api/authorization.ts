@@ -8,7 +8,7 @@ interface AuthorizationObject {
     token_type: string;
 }
 
-async function refreshTokens(autorization, encryptedClientSecret) {
+async function refreshTokens(autorization: AuthorizationObject, encryptedClientSecret: string) {
     const options = {
         method: 'POST',
         url: 'https://login.eveonline.com/v2/oauth/token',
@@ -27,10 +27,10 @@ async function refreshTokens(autorization, encryptedClientSecret) {
         if (response.status === 200) {
             autorization.access_token = response.data.access_token;
             autorization.refresh_token = response.data.refresh_token;
-            return autorization;
+            return autorization as AuthorizationObject;
         }
     } catch (error) {
-        console.error(error);
+        throw error;
     }
 }
 
@@ -41,14 +41,18 @@ async function callApiWithTokenRefresh({ apiFunction, autorizationObject, args =
         try {
             const response = await apiFunction(...args);
             return response;
-        } catch (error) {
+        } catch (error: any) {
             if (error.response.status === 403) {
                 console.log(`Token expired. Refreshing with callApiWithTokenRefresh...`);
-                const refreshedTokens = await refreshTokens(autorizationObject, config.EVE_ENCRYPTED_CLIENT_SECRET);
-                config.ACCESS_TOKEN = refreshedTokens.access_token;
-                config.REFRESH_TOKEN = refreshedTokens.refresh_token;
-                args[0] = refreshedTokens.access_token;
-                return await apiFunction(...args);
+                const refreshedTokens: AuthorizationObject | undefined = await refreshTokens(autorizationObject, config.EVE_ENCRYPTED_CLIENT_SECRET);
+                if (refreshedTokens) {
+                    config.ACCESS_TOKEN = refreshedTokens.access_token;
+                    config.REFRESH_TOKEN = refreshedTokens.refresh_token;
+                    args[0] = refreshedTokens.access_token;
+                    return await apiFunction(...args);
+                } else {
+                    throw new Error('Failed to refresh tokens.');
+                }
             } else if (error.response.status === 504) {
                 console.log('504 error. Retrying...');
                 retries++;

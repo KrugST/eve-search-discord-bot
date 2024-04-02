@@ -1,7 +1,7 @@
 import { getAllCharacterInfo, searchEveUsers } from '../eve-api/character';
-import { getCorporationInfo, getCorporationImage } from '../eve-api/corporations';
+import { getCorporationInfo } from '../eve-api/corporations';
 import { callApiWithTokenRefresh } from '../eve-api/authorization';
-const { EmbedBuilder } = require('discord-embed-builder');
+import { EmbedBuilder } from 'discord.js';
 import { config } from '../config/config';
 
 const getPublicEveDataForUser = async (searchTerm: string) => {

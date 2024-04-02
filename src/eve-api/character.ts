@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCorporationInfo, getCorporationImage } from './corporations';
 import { getAllianceInfo, getAllianceImage } from '../eve-api/alliances';
 
-async function getCharacterInfo(characterId) {
+async function getCharacterInfo(characterId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/characters/${characterId}/?datasource=tranquility`,
@@ -15,7 +15,7 @@ async function getCharacterInfo(characterId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }
@@ -23,7 +23,7 @@ async function getCharacterInfo(characterId) {
     }
 }
 
-async function getCharacterPortrait(characterId) {
+async function getCharacterPortrait(characterId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/characters/${characterId}/portrait/?datasource=tranquility`,
@@ -35,7 +35,7 @@ async function getCharacterPortrait(characterId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }
@@ -43,7 +43,7 @@ async function getCharacterPortrait(characterId) {
     }
 }
 
-async function getCharacterCorporationHistory(characterId) {
+async function getCharacterCorporationHistory(characterId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/characters/${characterId}/corporationhistory/?datasource=tranquility`,
@@ -55,7 +55,7 @@ async function getCharacterCorporationHistory(characterId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }
@@ -63,7 +63,7 @@ async function getCharacterCorporationHistory(characterId) {
     }
 }
 
-async function searchEveUsers(access_token, name, characterId) {
+async function searchEveUsers(access_token: string, name: string, characterId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/characters/${characterId}/search/?categories=character&datasource=tranquility&language=en&search=${encodeURIComponent(name)}&strict=True`,
@@ -78,7 +78,7 @@ async function searchEveUsers(access_token, name, characterId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }
@@ -86,7 +86,7 @@ async function searchEveUsers(access_token, name, characterId) {
     }
 }
 
-async function getAllCharacterInfo(characterId, retryCount = 0) {
+async function getAllCharacterInfo(characterId: number, retryCount = 0) {
     try {
         const characterInfo = await getCharacterInfo(characterId);
         const characterCorporationHistory = await getCharacterCorporationHistory(characterId);
@@ -118,7 +118,7 @@ async function getAllCharacterInfo(characterId, retryCount = 0) {
         characterInfo.allianceInfo = allianceInfo;
         characterInfo.allianceImage = allianceImage;
         return characterInfo;
-    } catch (error) {
+    } catch (error: any) {
         if (error.statusCode === 503 && retryCount < 3) {
             console.log('Error 503 encountered. Retrying...');
             await new Promise(resolve => setTimeout(resolve, 2000)); // wait for 2 seconds before retrying

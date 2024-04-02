@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-async function getCorporationInfo(corporationId) {
+async function getCorporationInfo(corporationId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/corporations/${corporationId}/?datasource=tranquility`,
@@ -13,7 +12,7 @@ async function getCorporationInfo(corporationId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }
@@ -21,7 +20,7 @@ async function getCorporationInfo(corporationId) {
     }
 }
 
-async function getCorporationImage(corporationId) {
+async function getCorporationImage(corporationId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/corporations/${corporationId}/icons/?datasource=tranquility`,
@@ -34,7 +33,7 @@ async function getCorporationImage(corporationId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }

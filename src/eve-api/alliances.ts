@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-async function getAllianceInfo(allianceId) {
+async function getAllianceInfo(allianceId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/alliances/${allianceId}/?datasource=tranquility`,
@@ -13,7 +13,7 @@ async function getAllianceInfo(allianceId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }
@@ -21,7 +21,7 @@ async function getAllianceInfo(allianceId) {
     }
 }
 
-async function getAllianceImage(allianceId) {
+async function getAllianceImage(allianceId: number) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/alliances/${allianceId}/icons/?datasource=tranquility`,
@@ -34,7 +34,7 @@ async function getAllianceImage(allianceId) {
     try {
         const response = await axios(options);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         if (error.response.status !== 403) {
             console.error(error);
         }
