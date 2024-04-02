@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, GuildMember, User } from 'discord.js';
 import { refreshCommands } from './slash-commands';
 import { config } from './src/config/config';
 import { getPublicEveDataForUser } from './src/services/search';
@@ -23,14 +23,21 @@ client.on('interactionCreate', async interaction => {
             break;
         case "search-by-discord-user":
             await interaction.deferReply();
-            const user = interaction.options.getMember('user');
-            console.log('interaction: ', interaction.options);
-            if (!user) {
+            const member = interaction.options.getMember('user');
+            const user = interaction.options.getUser('user');
+            let username = '';
+            if (member instanceof GuildMember) {
+                username = member.nickname || member.user.globalName || member.user.username;
+            } else if (user instanceof User) {
+                username = user.globalName || user.username;
+            }
+
+            if (!username) {
                 await interaction.editReply('User not found!');
                 return;
             }
             // @ts-ignore
-            const embedMessageUser = await getPublicEveDataForUser(user.nickname);
+            const embedMessageUser = await getPublicEveDataForUser(username);
             await interaction.editReply({ embeds: [embedMessageUser] });
             break;
     }
