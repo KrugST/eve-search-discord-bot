@@ -50,7 +50,9 @@ const getPublicEveDataForUser = async (searchTerm: string) => {
             for (const corporation of corporationhistory.slice(0, 15)) {
                 const corporationInfo = await getCorporationInfo(corporation.corporation_id);
                 const joinedDate = new Date(corporation.start_date).toLocaleDateString();
-                embed.addField(`[${corporationInfo.name}](https://evewho.com/corporation/${corporation.corporation_id})`, `${joinedDate}`,);
+                embed.addFields(
+                    { name: `[${corporationInfo.name}](https://evewho.com/corporation/${corporation.corporation_id})`, value: `${joinedDate}` }
+                );
             }
         }
 
