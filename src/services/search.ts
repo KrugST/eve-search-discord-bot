@@ -8,18 +8,26 @@ const getPublicEveDataForUser = async (searchTerm: string) => {
     const searchResults = await callApiWithTokenRefresh({
         apiFunction: searchEveUsers,
         autorizationObject: { access_token: config.ACCESS_TOKEN, refresh_token: config.REFRESH_TOKEN, expires_in: 1200, token_type: 'Bearer' },
-        args: [config.ACCESS_TOKEN, searchTerm]
+        args: [config.ACCESS_TOKEN, config.EVE_ESI_CHARACTER_ID, searchTerm]
     });
 
     if (searchResults && searchResults?.character) {
         const characterId = searchResults?.character[0];
+        if (!characterId) {
+            const embed = await new EmbedBuilder()
+                .setColor(0xFF0000)
+                .setTitle(searchTerm)
+                .setDescription('Character not found. Please try again.')
+                .setTimestamp();
+            return embed;
+        }
 
         const characterInformation = await getAllCharacterInfo(characterId);
 
         const corporation = characterInformation.corporationInfo;
         const corporationUrl = `https://evewho.com/corporation/${corporation.corporation_id}`;
 
-        const corporationhistory = characterInformation.corporationHistory;
+        const corporationhistory = characterInformation.characterCorporationHistory;
 
         const alliance = characterInformation.allianceInfo;
         const allianceUrl = `https://evewho.com/alliance/${alliance.alliance_id}`;
@@ -30,8 +38,8 @@ const getPublicEveDataForUser = async (searchTerm: string) => {
 
 
         const embed = await new EmbedBuilder()
-            .setColor(0xFFFF00)
-            .setAuthor({ name: `[${alliance.name}](${allianceUrl})`, iconURL: allianceImage })
+            .setColor(0xFFFFFF)
+            .setAuthor({ name: `${alliance.name}`, iconURL: allianceImage })
             .setTitle(characterInformation.name)
             .setURL(`https://evewho.com/character/${characterId}`)
             .setThumbnail(corporationImage)
@@ -46,12 +54,12 @@ const getPublicEveDataForUser = async (searchTerm: string) => {
             )
             .setTimestamp();
 
-        if (corporationhistory.length > 0) {
+        if (Object.keys(corporationhistory).length > 0) {
             for (const corporation of corporationhistory.slice(0, 15)) {
                 const corporationInfo = await getCorporationInfo(corporation.corporation_id);
                 const joinedDate = new Date(corporation.start_date).toLocaleDateString();
                 embed.addFields(
-                    { name: `[${corporationInfo.name}](https://evewho.com/corporation/${corporation.corporation_id})`, value: `${joinedDate}` }
+                    { name: `${joinedDate}`, value: `[${corporationInfo.name}](https://evewho.com/corporation/${corporation.corporation_id})` }
                 );
             }
         }

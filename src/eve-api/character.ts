@@ -63,7 +63,7 @@ async function getCharacterCorporationHistory(characterId: number) {
     }
 }
 
-async function searchEveUsers(access_token: string, name: string, characterId: number) {
+async function searchEveUsers(access_token: string, characterId: number, name: string,) {
     const options = {
         method: 'GET',
         url: `https://esi.evetech.net/latest/characters/${characterId}/search/?categories=character&datasource=tranquility&language=en&search=${encodeURIComponent(name)}&strict=True`,
