@@ -19,7 +19,9 @@ const commands = [
             "name": "name",
             "description": "Please enter the name of the character you want to find",
             "type": 3, // 3 is type USER
-            "required": true
+            "required": true,
+            "min_length": 1,
+            "max_length": 100
         }]
     },
 ];
