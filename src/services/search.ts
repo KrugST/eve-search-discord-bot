@@ -5,6 +5,7 @@ import { EmbedBuilder } from 'discord.js';
 import { config } from '../config/config';
 
 const getPublicEveDataForUser = async (searchTerm: string) => {
+    console.log('getPublicEveDataForUser: searchTerm: ', searchTerm); 
     const searchResults = await callApiWithTokenRefresh({
         apiFunction: searchEveUsers,
         autorizationObject: { access_token: config.ACCESS_TOKEN, refresh_token: config.REFRESH_TOKEN, expires_in: 1200, token_type: 'Bearer' },
@@ -14,6 +15,7 @@ const getPublicEveDataForUser = async (searchTerm: string) => {
     if (searchResults && searchResults?.character) {
         const characterId = searchResults?.character[0];
         if (!characterId) {
+            console.log('getPublicEveDataForUser: Character not found: ', searchTerm);
             const embed = await new EmbedBuilder()
                 .setColor(0xFF0000)
                 .setTitle(searchTerm)
@@ -21,7 +23,7 @@ const getPublicEveDataForUser = async (searchTerm: string) => {
                 .setTimestamp();
             return embed;
         }
-
+        console.log('getPublicEveDataForUser: Character found: ', characterId);
         const characterInformation = await getAllCharacterInfo(characterId);
 
         const corporation = characterInformation.corporationInfo;
@@ -63,9 +65,10 @@ const getPublicEveDataForUser = async (searchTerm: string) => {
                 );
             }
         }
-
+        console.log('getPublicEveDataForUser: Search success: ', characterId);
         return embed;
     } else {
+        console.log('getPublicEveDataForUser.else: Character not found: ', searchTerm);
         const embed = await new EmbedBuilder()
             .setColor(0xFF0000)
             .setTitle(searchTerm)
