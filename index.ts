@@ -24,7 +24,7 @@ client.on('interactionCreate', async interaction => {
         case "search-by-discord-user":
             await interaction.deferReply();
             const user = interaction.options.getMember('user');
-            console.log('interaction: ', interaction);
+            console.log('interaction: ', interaction.options);
             if (!user) {
                 await interaction.editReply('User not found!');
                 return;
